@@ -1,3 +1,5 @@
 archive/
 bin/
 arduino.lnk
+
+esp-song/wificonf.h
