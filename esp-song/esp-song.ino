@@ -7,10 +7,12 @@
  * 
  */
 #include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
 #include "wificonf.h" // contains wifiNetwork wifiPassword
 
 int NOTES[] = {523, 587, 659, 698, 784, 880, 987, 1046, 1108};
-WiFiServer server(80);
+
+ESP8266WebServer server(80);
 
 int testPin = D1;
 
@@ -32,16 +34,14 @@ void setup() {
   }
   Serial.println("");
   Serial.printf("WiFi connected,local IP %s in a web browser\n", WiFi.localIP().toString().c_str());
+  server.on("/", serveDefaultMusicalScale);
   server.begin();
-  Serial.printf("Server started");
   espTone(testPin,NOTES[7],500);
-  espTone(testPin,NOTES[0],500);
+  Serial.printf("Server started");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //musicalScale(D1);
-
+  server.handleClient();
 }
 
 // simple gamme
@@ -49,6 +49,17 @@ void musicalScale(int pin){
   for (int i=0;i<8;i++){
     espTone(pin,NOTES[i],500);
   }
+}
+
+void serveDefaultMusicalScale(){
+  server.send(200, "text/html",getChirpHtml());
+  musicalScale(D1);
+}
+
+// prepare a web page to be send to a client (web browser)
+String getChirpHtml(){
+  String htmlPage = "<!DOCTYPE HTML><html><body>Chirp ♫</body></html>\r\n";
+  return htmlPage;
 }
 
 // base method for simple sound
