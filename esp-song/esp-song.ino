@@ -34,7 +34,8 @@ void setup() {
   }
   Serial.println("");
   Serial.printf("WiFi connected,local IP %s in a web browser\n", WiFi.localIP().toString().c_str());
-  server.on("/", serveDefaultMusicalScale);
+  server.on("/", serveEmptyPromise);
+  server.on("/chirp", serveDefaultMusicalScale);
   server.begin();
   espTone(testPin,NOTES[7],500);
   Serial.printf("Server started");
@@ -56,9 +57,20 @@ void serveDefaultMusicalScale(){
   musicalScale(D1);
 }
 
+void serveEmptyPromise(){
+  server.send(200, "text/html",getEmptyHtml());
+}
+
+
 // prepare a web page to be send to a client (web browser)
 String getChirpHtml(){
   String htmlPage = "<!DOCTYPE HTML><html><body>Chirp ♫</body></html>\r\n";
+  return htmlPage;
+}
+
+// prepare a web page to be send to a client (web browser)
+String getEmptyHtml(){
+  String htmlPage = "<!DOCTYPE HTML><html><body><a href='/chirp'>chirp</a></body></html>\r\n";
   return htmlPage;
 }
 
