@@ -38,6 +38,7 @@ void setup() {
   Serial.printf("WiFi connected,local IP %s in a web browser\n", WiFi.localIP().toString().c_str());
   server.on("/", serveEmptyPromise);
   server.on("/chirp", serveDefaultMusicalScale);
+  server.on("/random", serverRandomNote);
   server.begin();
   espTone(testPin,NOTES[7],500);
   Serial.printf("Server started");
@@ -52,6 +53,12 @@ void musicalScale(int pin){
   for (int i=0;i<8;i++){
     espTone(pin,NOTES[i],500);
   }
+}
+
+void serverRandomNote(){
+  server.send(200, "text/html","la");
+  long randNoteIndex = random(9);
+  espTone(D1,NOTES[randNoteIndex],500);
 }
 
 void serveDefaultMusicalScale(){

@@ -1,22 +1,35 @@
 <html>
-<head><title>esp-song command panel</title></head>
+<head>
+    <title>esp-song command panel</title>
+    <style>
+    .chirp-button{
+        background-color: #42f5bfc9;
+        color: black;
+        padding: 4em;
+        font-size: 3em;
+
+    }
+    </style>
+</head>
 <body>
-<h1>esp-song command panel</h1>
+    <h1>esp-song command panel</h1>
+        <button id="chirp-main" class="chirp-button" onclick="chirp();">chirp</button>
+        <button id="chirp-random" class="chirp-button" onclick="random();">random</button>
+    <script>
+        const SERVER_IP = "192.168.1.35";
+        function chirp(){
+            console.log("chirp IN");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://"+SERVER_IP+"/chirp");
+            xhr.send(null);
+        };
+        function random(){
+            console.log("random IN");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://"+SERVER_IP+"/random");
+            xhr.send(null);
+        };
 
-
-
-
-
-
-<script>
-
-
-
-
-
-</script>
+    </script>
 </body>
-
-
-
 </html>
