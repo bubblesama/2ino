@@ -9,6 +9,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include "wificonf.h" // contains wifiNetwork wifiPassword
+#include "espsong_html.h" // contains static pages
 
 int NOTES[] = {523, 587, 659, 698, 784, 880, 987, 1046, 1108};
 
@@ -70,8 +71,7 @@ String getChirpHtml(){
 
 // prepare a web page to be send to a client (web browser)
 String getEmptyHtml(){
-  String htmlPage = "<!DOCTYPE HTML><html><body><a href='/chirp'>chirp</a></body></html>\r\n";
-  return htmlPage;
+  return rootPageHtml;
 }
 
 // base method for simple sound
