@@ -11,7 +11,6 @@
 #include "wificonf.h" // contains wifiNetwork wifiPassword
 #include "espsong_html.h" // contains static pages
 
-
 int NOTES[] = {523, 587, 659, 698, 784, 880, 987, 1046, 1108};
 
 ESP8266WebServer server(80);
@@ -30,17 +29,19 @@ void setup() {
   Serial.println(wifiNetwork);
   WiFi.begin(wifiNetwork, wifiPassword);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(400);
+    delay(800);
     Serial.print(".");
     espTone(testPin,NOTES[0],100);
   }
   Serial.println("");
   Serial.printf("WiFi connected,local IP %s in a web browser\n", WiFi.localIP().toString().c_str());
-  server.on("/", serveEmptyPromise);
+  server.on("/", serveCommandPanel);
   server.on("/chirp", serveDefaultMusicalScale);
-  server.on("/random", serverRandomNote);
+  server.on("/random", serveRandomNote);
   server.begin();
-  espTone(testPin,NOTES[7],500);
+  espTone(testPin,NOTES[7],200);
+  espTone(testPin,NOTES[7],200);
+  espTone(testPin,NOTES[7],200);
   Serial.printf("Server started");
 }
 
@@ -55,30 +56,19 @@ void musicalScale(int pin){
   }
 }
 
-void serverRandomNote(){
+void serveCommandPanel(){
+  server.send(200, "text/html",chirpPageHtml);
+}
+
+void serveRandomNote(){
   server.send(200, "text/html","la");
   long randNoteIndex = random(9);
   espTone(D1,NOTES[randNoteIndex],500);
 }
 
 void serveDefaultMusicalScale(){
-  server.send(200, "text/html",getChirpHtml());
+  server.send(200, "text/html","chirp");
   musicalScale(D1);
-}
-
-void serveEmptyPromise(){
-  server.send(200, "text/html",getEmptyHtml());
-}
-
-
-// prepare a web page to be send to a client (web browser)
-String getChirpHtml(){
-  return chirpPageHtml;
-}
-
-// prepare a web page to be send to a client (web browser)
-String getEmptyHtml(){
-  return rootPageHtml;
 }
 
 // base method for simple sound
